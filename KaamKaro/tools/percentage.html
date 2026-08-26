@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Percentage Calculator - KaamKaro</title>
+
+    <meta
+        name="description"
+        content="Calculate percentage, increase, decrease, discount and marks percentage with KaamKaro."
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <style>
+
+        .tool-page {
+            max-width: 900px;
+            margin: auto;
+            padding: 60px 20px 100px;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .tool-big-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: auto auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 20px;
+
+            background: #e6fbff;
+
+            font-size: 32px;
+        }
+
+        .tool-header h2 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .tool-header p {
+            color: var(--muted);
+        }
+
+        .calculator-box {
+            max-width: 700px;
+            margin: auto;
+
+            background: white;
+
+            border: 1px solid var(--border);
+
+            border-radius: 24px;
+
+            padding: 25px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .calculator-tabs {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+            margin-bottom: 25px;
+        }
+
+        .calc-tab {
+            padding: 13px;
+
+            border: 1px solid var(--border);
+
+            background: white;
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+
+            color: var(--muted);
+
+            transition: 0.2s;
+        }
+
+        .calc-tab.active {
+            background: #eeeaff;
+
+            border-color: #d8d0ff;
+
+            color: var(--primary);
+        }
+
+        .calculator {
+            display: none;
+        }
+
+        .calculator.active {
+            display: block;
+        }
+
+        .calculator h3 {
+            margin-bottom: 8px;
+        }
+
+        .calculator-description {
+            color: var(--muted);
+
+            font-size: 13px;
+
+            margin-bottom: 22px;
+        }
+
+        .input-row {
+            display: grid;
+
+            grid-template-columns:
+                1fr auto 1fr;
+
+            gap: 10px;
+
+            align-items: end;
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        .input-group input {
+            width: 100%;
+
+            padding: 14px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            outline: none;
+
+            font-size: 15px;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .operator {
+            font-size: 22px;
+
+            font-weight: 800;
+
+            padding-bottom: 12px;
+
+            color: var(--primary);
+        }
+
+        .single-input {
+            margin-bottom: 15px;
+        }
+
+        .calculate-button {
+            width: 100%;
+
+            margin-top: 22px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            background: var(--primary);
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .result {
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 20px;
+
+            background: #f1fff7;
+
+            border: 1px solid #cceedd;
+
+            border-radius: 16px;
+
+            text-align: center;
+        }
+
+        .result-label {
+            color: var(--muted);
+
+            font-size: 13px;
+
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 32px;
+
+            font-weight: 800;
+
+            color: var(--primary);
+        }
+
+        .error {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 14px;
+
+            background: #fff0f0;
+
+            color: #c62828;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+        }
+
+        .marks-grid {
+            display: grid;
+
+            gap: 12px;
+        }
+
+        .subject-row {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr auto;
+
+            gap: 10px;
+
+            align-items: end;
+        }
+
+        .remove-subject {
+            width: 45px;
+            height: 45px;
+
+            border: 1px solid #ffd0d0;
+
+            background: #fff5f5;
+
+            color: #c62828;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+        .add-subject {
+            width: 100%;
+
+            margin-top: 12px;
+
+            padding: 12px;
+
+            border: 1px dashed #c9c2ee;
+
+            background: #faf9ff;
+
+            color: var(--primary);
+
+            border-radius: 12px;
+
+            cursor: pointer;
+
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+
+            .tool-page {
+                padding-top: 40px;
+            }
+
+            .tool-header h2 {
+                font-size: 30px;
+            }
+
+            .calculator-box {
+                padding: 18px;
+            }
+
+            .calculator-tabs {
+                grid-template-columns: 1fr;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            .operator {
+                padding: 0;
+
+                text-align: center;
+            }
+
+            .subject-row {
+                grid-template-columns:
+                    1fr 1fr;
+            }
+
+            .remove-subject {
+                grid-column: 1 / -1;
+
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="logo">
+
+        <a
+            href="../index.html"
+            style="
+                text-decoration:none;
+                color:inherit;
+                display:flex;
+                align-items:center;
+                gap:12px;
+            "
+        >
+
+            <div class="logo-icon">
+                K
+            </div>
+
+            <div>
+
+                <h1>KaamKaro</h1>
+
+                <p>Digital Tools</p>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+<section class="tool-page">
+
+
+    <div class="tool-header">
+
+        <div class="tool-big-icon">
+            🧮
+        </div>
+
+        <h2>
+            Percentage Calculator
+        </h2>
+
+        <p>
+            Calculate percentages, discounts, changes and marks.
+        </p>
+<button
+    id="favoriteButton"
+    class="favorite-button"
+>
+    ☆ Add to Favorites
+</button>
+    </div>
+
+
+
+    <div class="calculator-box">
+
+
+        <!-- TABS -->
+
+        <div class="calculator-tabs">
+
+            <button
+                class="calc-tab active"
+                data-target="basic"
+            >
+                Basic %
+            </button>
+
+            <button
+                class="calc-tab"
+                data-target="change"
+            >
+                Increase / Decrease
+            </button>
+
+            <button
+                class="calc-tab"
+                data-target="discount"
+            >
+                Discount
+            </button>
+
+            <button
+                class="calc-tab"
+                data-target="marks"
+            >
+                Marks %
+            </button>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div
+            class="error"
+            id="errorBox"
+        ></div>
+
+
+
+        <!-- BASIC -->
+
+        <div
+            class="calculator active"
+            id="basic"
+        >
+
+            <h3>
+                What is X% of Y?
+            </h3>
+
+            <p class="calculator-description">
+                Find a percentage of any number.
+            </p>
+
+
+            <div class="input-row">
+
+                <div class="input-group">
+
+                    <label>
+                        Percentage
+                    </label>
+
+                    <input
+                        type="number"
+                        id="basicPercent"
+                        placeholder="25"
+                    >
+
+                </div>
+
+
+                <div class="operator">
+                    %
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        Number
+                    </label>
+
+                    <input
+                        type="number"
+                        id="basicNumber"
+                        placeholder="500"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="calculate-button"
+                onclick="calculateBasic()"
+            >
+                Calculate
+            </button>
+
+
+            <div
+                class="result"
+                id="basicResult"
+            >
+
+                <div class="result-label">
+                    Result
+                </div>
+
+                <div
+                    class="result-value"
+                    id="basicValue"
+                >
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- CHANGE -->
+
+        <div
+            class="calculator"
+            id="change"
+        >
+
+            <h3>
+                Percentage Increase / Decrease
+            </h3>
+
+            <p class="calculator-description">
+                Compare an old value with a new value.
+            </p>
+
+
+            <div class="input-row">
+
+                <div class="input-group">
+
+                    <label>
+                        Old Value
+                    </label>
+
+                    <input
+                        type="number"
+                        id="oldValue"
+                        placeholder="100"
+                    >
+
+                </div>
+
+
+                <div class="operator">
+                    →
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>
+                        New Value
+                    </label>
+
+                    <input
+                        type="number"
+                        id="newValue"
+                        placeholder="125"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="calculate-button"
+                onclick="calculateChange()"
+            >
+                Calculate
+            </button>
+
+
+            <div
+                class="result"
+                id="changeResult"
+            >
+
+                <div class="result-label">
+                    Change
+                </div>
+
+                <div
+                    class="result-value"
+                    id="changeValue"
+                >
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DISCOUNT -->
+
+        <div
+            class="calculator"
+            id="discount"
+        >
+
+            <h3>
+                Discount Calculator
+            </h3>
+
+            <p class="calculator-description">
+                Find the discount amount and final price.
+            </p>
+
+
+            <div class="single-input">
+
+                <div class="input-group">
+
+                    <label>
+                        Original Price
+                    </label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        placeholder="1000"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="single-input">
+
+                <div class="input-group">
+
+                    <label>
+                        Discount %
+                    </label>
+
+                    <input
+                        type="number"
+                        id="discountPercent"
+                        placeholder="20"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="calculate-button"
+                onclick="calculateDiscount()"
+            >
+                Calculate
+            </button>
+
+
+            <div
+                class="result"
+                id="discountResult"
+            >
+
+                <div class="result-label">
+                    You Save
+                </div>
+
+                <div
+                    class="result-value"
+                    id="savedValue"
+                >
+                    -
+                </div>
+
+                <div
+                    class="result-label"
+                    style="margin-top:15px;"
+                >
+                    Final Price
+                </div>
+
+                <div
+                    class="result-value"
+                    id="finalPrice"
+                >
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MARKS -->
+
+        <div
+            class="calculator"
+            id="marks"
+        >
+
+            <h3>
+                Marks Percentage
+            </h3>
+
+            <p class="calculator-description">
+                Add subjects and calculate total percentage.
+            </p>
+
+
+            <div
+                class="marks-grid"
+                id="marksGrid"
+            >
+
+                <div class="subject-row">
+
+                    <div class="input-group">
+
+                        <label>
+                            Obtained
+                        </label>
+
+                        <input
+                            type="number"
+                            class="obtained"
+                            placeholder="80"
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label>
+                            Maximum
+                        </label>
+
+                        <input
+                            type="number"
+                            class="maximum"
+                            placeholder="100"
+                        >
+
+                    </div>
+
+
+                    <button
+                        class="remove-subject"
+                        onclick="removeSubject(this)"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="add-subject"
+                onclick="addSubject()"
+            >
+                + Add Subject
+            </button>
+
+
+            <button
+                class="calculate-button"
+                onclick="calculateMarks()"
+            >
+                Calculate Percentage
+            </button>
+
+
+            <div
+                class="result"
+                id="marksResult"
+            >
+
+                <div class="result-label">
+                    Overall Percentage
+                </div>
+
+                <div
+                    class="result-value"
+                    id="marksValue"
+                >
+                    -
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+
+<script>
+
+
+const tabs =
+    document.querySelectorAll(
+        ".calc-tab"
+    );
+
+
+const calculators =
+    document.querySelectorAll(
+        ".calculator"
+    );
+
+
+const errorBox =
+    document.getElementById(
+        "errorBox"
+    );
+
+
+
+tabs.forEach(
+    tab => {
+
+        tab.addEventListener(
+            "click",
+            () => {
+
+                tabs.forEach(
+                    item =>
+                        item.classList.remove(
+                            "active"
+                        )
+                );
+
+
+                calculators.forEach(
+                    calculator =>
+                        calculator.classList.remove(
+                            "active"
+                        )
+                );
+
+
+                tab.classList.add(
+                    "active"
+                );
+
+
+                document
+                    .getElementById(
+                        tab.dataset.target
+                    )
+                    .classList.add(
+                        "active"
+                    );
+
+
+                hideError();
+
+            }
+        );
+
+    }
+);
+
+
+
+function showError(message) {
+
+    errorBox.textContent =
+        message;
+
+    errorBox.style.display =
+        "block";
+
+}
+
+
+function hideError() {
+
+    errorBox.style.display =
+        "none";
+
+}
+
+
+
+function formatNumber(number) {
+
+    return Number(
+        number.toFixed(2)
+    );
+
+}
+
+
+
+function calculateBasic() {
+
+    hideError();
+
+
+    const percent =
+        Number(
+            document.getElementById(
+                "basicPercent"
+            ).value
+        );
+
+
+    const number =
+        Number(
+            document.getElementById(
+                "basicNumber"
+            ).value
+        );
+
+
+    if (
+        !Number.isFinite(percent) ||
+        !Number.isFinite(number)
+    ) {
+
+        showError(
+            "Please enter valid numbers."
+        );
+
+        return;
+
+    }
+
+
+    const result =
+        (percent / 100) *
+        number;
+
+
+    document.getElementById(
+        "basicValue"
+    ).textContent =
+        formatNumber(
+            result
+        );
+
+
+    document.getElementById(
+        "basicResult"
+    ).style.display =
+        "block";
+
+}
+
+
+
+function calculateChange() {
+
+    hideError();
+
+
+    const oldValue =
+        Number(
+            document.getElementById(
+                "oldValue"
+            ).value
+        );
+
+
+    const newValue =
+        Number(
+            document.getElementById(
+                "newValue"
+            ).value
+        );
+
+
+    if (
+        !Number.isFinite(oldValue) ||
+        !Number.isFinite(newValue) ||
+        oldValue === 0
+    ) {
+
+        showError(
+            "Please enter valid values. Old value cannot be zero."
+        );
+
+        return;
+
+    }
+
+
+    const change =
+        (
+            (newValue - oldValue) /
+            Math.abs(oldValue)
+        ) * 100;
+
+
+    const resultText =
+        change >= 0
+            ? `Increase: ${formatNumber(change)}%`
+            : `Decrease: ${formatNumber(Math.abs(change))}%`;
+
+
+    document.getElementById(
+        "changeValue"
+    ).textContent =
+        resultText;
+
+
+    document.getElementById(
+        "changeResult"
+    ).style.display =
+        "block";
+
+}
+
+
+
+function calculateDiscount() {
+
+    hideError();
+
+
+    const price =
+        Number(
+            document.getElementById(
+                "price"
+            ).value
+        );
+
+
+    const percent =
+        Number(
+            document.getElementById(
+                "discountPercent"
+            ).value
+        );
+
+
+    if (
+        !Number.isFinite(price) ||
+        !Number.isFinite(percent) ||
+        price < 0 ||
+        percent < 0 ||
+        percent > 100
+    ) {
+
+        showError(
+            "Enter a valid price and discount between 0% and 100%."
+        );
+
+        return;
+
+    }
+
+
+    const saved =
+        price *
+        percent /
+        100;
+
+
+    const final =
+        price -
+        saved;
+
+
+    document.getElementById(
+        "savedValue"
+    ).textContent =
+        formatNumber(saved);
+
+
+    document.getElementById(
+        "finalPrice"
+    ).textContent =
+        formatNumber(final);
+
+
+    document.getElementById(
+        "discountResult"
+    ).style.display =
+        "block";
+
+}
+
+
+
+function addSubject() {
+
+    const grid =
+        document.getElementById(
+            "marksGrid"
+        );
+
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+
+    row.className =
+        "subject-row";
+
+
+    row.innerHTML = `
+
+        <div class="input-group">
+
+            <label>
+                Obtained
+            </label>
+
+            <input
+                type="number"
+                class="obtained"
+                placeholder="80"
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Maximum
+            </label>
+
+            <input
+                type="number"
+                class="maximum"
+                placeholder="100"
+            >
+
+        </div>
+
+
+        <button
+            class="remove-subject"
+            onclick="removeSubject(this)"
+        >
+            ×
+        </button>
+
+    `;
+
+
+    grid.appendChild(
+        row
+    );
+
+}
+
+
+
+function removeSubject(button) {
+
+    const grid =
+        document.getElementById(
+            "marksGrid"
+        );
+
+
+    const rows =
+        grid.querySelectorAll(
+            ".subject-row"
+        );
+
+
+    if (
+        rows.length <= 1
+    ) {
+
+        return;
+
+    }
+
+
+    button
+        .closest(
+            ".subject-row"
+        )
+        .remove();
+
+}
+
+
+
+function calculateMarks() {
+
+    hideError();
+
+
+    const obtainedInputs =
+        document.querySelectorAll(
+            ".obtained"
+        );
+
+
+    const maximumInputs =
+        document.querySelectorAll(
+            ".maximum"
+        );
+
+
+    let totalObtained = 0;
+
+    let totalMaximum = 0;
+
+
+    for (
+        let i = 0;
+        i < obtainedInputs.length;
+        i++
+    ) {
+
+        const obtained =
+            Number(
+                obtainedInputs[i].value
+            );
+
+
+        const maximum =
+            Number(
+                maximumInputs[i].value
+            );
+
+
+        if (
+            !Number.isFinite(obtained) ||
+            !Number.isFinite(maximum) ||
+            maximum <= 0 ||
+            obtained < 0 ||
+            obtained > maximum
+        ) {
+
+            showError(
+                "Please enter valid marks. Obtained marks cannot exceed maximum marks."
+            );
+
+            return;
+
+        }
+
+
+        totalObtained +=
+            obtained;
+
+
+        totalMaximum +=
+            maximum;
+
+    }
+
+
+    if (
+        totalMaximum === 0
+    ) {
+
+        showError(
+            "Please enter your marks."
+        );
+
+        return;
+
+    }
+
+
+    const percentage =
+        (
+            totalObtained /
+            totalMaximum
+        ) * 100;
+
+
+    document.getElementById(
+        "marksValue"
+    ).textContent =
+        `${formatNumber(percentage)}%`;
+
+
+    document.getElementById(
+        "marksResult"
+    ).style.display =
+        "block";
+
+}
+
+
+</script>
+
+<script src="../js/app.js"></script>
+</body>
+
+</html>

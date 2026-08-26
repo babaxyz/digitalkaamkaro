@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Image to PDF - KaamKaro</title>
+
+    <meta
+        name="description"
+        content="Convert multiple images into a PDF with KaamKaro."
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    <style>
+
+        .tool-page {
+            max-width: 950px;
+            margin: auto;
+            padding: 60px 20px 100px;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .tool-big-icon {
+            width: 70px;
+            height: 70px;
+            margin: auto auto 20px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 20px;
+
+            background: #fff0f0;
+
+            font-size: 32px;
+        }
+
+        .tool-header h2 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .tool-header p {
+            color: var(--muted);
+        }
+
+        .pdf-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .upload-area {
+            border: 2px dashed #d9d4f5;
+            border-radius: 20px;
+            padding: 45px 20px;
+            text-align: center;
+            cursor: pointer;
+            background: #faf9ff;
+            transition: 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: #f7f5ff;
+        }
+
+        .upload-icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .upload-area h3 {
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .selected-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .selected-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .selected-header h3 {
+            font-size: 19px;
+        }
+
+        .image-count {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .image-list {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .image-item {
+            position: relative;
+            background: #f7f7fb;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 10px;
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .image-number {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+
+            width: 28px;
+            height: 28px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: var(--primary);
+            color: white;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+
+            width: 28px;
+            height: 28px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(0,0,0,0.7);
+            color: white;
+
+            cursor: pointer;
+        }
+
+        .move-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .move-buttons button {
+            flex: 1;
+
+            border: 1px solid var(--border);
+            background: white;
+
+            border-radius: 9px;
+
+            padding: 7px;
+
+            cursor: pointer;
+        }
+
+        .generate-button {
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background: var(--primary);
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .generate-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result {
+            display: none;
+
+            margin-top: 25px;
+
+            padding: 20px;
+
+            background: #f1fff7;
+
+            border: 1px solid #cceedd;
+
+            border-radius: 18px;
+        }
+
+        .download-button {
+            display: block;
+
+            width: 100%;
+
+            margin-top: 15px;
+
+            padding: 15px;
+
+            border-radius: 14px;
+
+            background: #171525;
+
+            color: white;
+
+            text-decoration: none;
+
+            text-align: center;
+
+            font-weight: 700;
+        }
+
+        .reset-button {
+            width: 100%;
+
+            padding: 13px;
+
+            margin-top: 10px;
+
+            border: 1px solid var(--border);
+
+            background: white;
+
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+        .error {
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 14px;
+
+            background: #fff0f0;
+
+            color: #c62828;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+
+            .tool-page {
+                padding-top: 40px;
+            }
+
+            .tool-header h2 {
+                font-size: 30px;
+            }
+
+            .pdf-box {
+                padding: 18px;
+            }
+
+            .image-list {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .image-item img {
+                height: 145px;
+            }
+
+        }
+
+        @media (max-width: 430px) {
+
+            .image-list {
+                grid-template-columns: 1fr;
+            }
+
+            .image-item img {
+                height: 220px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+    <div class="logo">
+
+        <a
+            href="../index.html"
+            style="
+                text-decoration:none;
+                color:inherit;
+                display:flex;
+                align-items:center;
+                gap:12px;
+            "
+        >
+
+            <div class="logo-icon">
+                K
+            </div>
+
+            <div>
+
+                <h1>KaamKaro</h1>
+
+                <p>Digital Tools</p>
+
+            </div>
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<main>
+
+<section class="tool-page">
+
+
+    <div class="tool-header">
+
+        <div class="tool-big-icon">
+            📄
+        </div>
+
+        <h2>
+            Image to PDF
+        </h2>
+
+        <p>
+            Convert multiple images into one PDF.
+        </p>
+<button
+    id="favoriteButton"
+    class="favorite-button"
+>
+    ☆ Add to Favorites
+</button>
+    </div>
+
+
+
+    <div class="pdf-box">
+
+
+        <!-- UPLOAD -->
+
+        <label
+            class="upload-area"
+            for="imageInput"
+        >
+
+            <div class="upload-icon">
+                📤
+            </div>
+
+            <h3>
+                Select Images
+            </h3>
+
+            <p>
+                JPG, PNG or WebP
+            </p>
+
+            <p>
+                You can select multiple images
+            </p>
+
+        </label>
+
+
+        <input
+            type="file"
+            id="imageInput"
+            accept="image/jpeg,image/png,image/webp"
+            multiple
+        >
+
+
+
+        <!-- ERROR -->
+
+        <div
+            class="error"
+            id="errorBox"
+        ></div>
+
+
+
+        <!-- SELECTED -->
+
+        <div
+            class="selected-section"
+            id="selectedSection"
+        >
+
+            <div class="selected-header">
+
+                <h3>
+                    Selected Images
+                </h3>
+
+                <span
+                    class="image-count"
+                    id="imageCount"
+                >
+                    0 images
+                </span>
+
+            </div>
+
+
+            <div
+                class="image-list"
+                id="imageList"
+            ></div>
+
+
+            <button
+                class="generate-button"
+                id="generateButton"
+            >
+                Create PDF
+            </button>
+
+        </div>
+
+
+
+        <!-- RESULT -->
+
+        <div
+            class="result"
+            id="result"
+        >
+
+            <h3>
+                ✅ PDF Created Successfully
+            </h3>
+
+            <p>
+                Your PDF is ready to download.
+            </p>
+
+
+            <a
+                id="downloadButton"
+                class="download-button"
+                download="kaamkaro-images.pdf"
+            >
+                Download PDF
+            </a>
+
+
+            <button
+                class="reset-button"
+                id="resetButton"
+            >
+                Create Another PDF
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+
+<script>
+
+const {
+    jsPDF
+} = window.jspdf;
+
+
+const imageInput =
+    document.getElementById(
+        "imageInput"
+    );
+
+const imageList =
+    document.getElementById(
+        "imageList"
+    );
+
+const selectedSection =
+    document.getElementById(
+        "selectedSection"
+    );
+
+const imageCount =
+    document.getElementById(
+        "imageCount"
+    );
+
+const generateButton =
+    document.getElementById(
+        "generateButton"
+    );
+
+const result =
+    document.getElementById(
+        "result"
+    );
+
+const downloadButton =
+    document.getElementById(
+        "downloadButton"
+    );
+
+const resetButton =
+    document.getElementById(
+        "resetButton"
+    );
+
+const errorBox =
+    document.getElementById(
+        "errorBox"
+    );
+
+
+let selectedImages = [];
+
+let pdfUrl = null;
+
+
+
+function showError(message) {
+
+    errorBox.textContent =
+        message;
+
+    errorBox.style.display =
+        "block";
+
+}
+
+
+function hideError() {
+
+    errorBox.style.display =
+        "none";
+
+}
+
+
+
+function renderImages() {
+
+    imageList.innerHTML = "";
+
+
+    selectedImages.forEach(
+        (file, index) => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "image-item";
+
+
+            const img =
+                document.createElement(
+                    "img"
+                );
+
+
+            const url =
+                URL.createObjectURL(
+                    file
+                );
+
+
+            img.src = url;
+
+
+            const number =
+                document.createElement(
+                    "div"
+                );
+
+            number.className =
+                "image-number";
+
+            number.textContent =
+                index + 1;
+
+
+            const remove =
+                document.createElement(
+                    "button"
+                );
+
+            remove.className =
+                "remove-image";
+
+            remove.textContent =
+                "×";
+
+
+            remove.addEventListener(
+                "click",
+                () => {
+
+                    selectedImages.splice(
+                        index,
+                        1
+                    );
+
+                    renderImages();
+
+                }
+            );
+
+
+            const moveButtons =
+                document.createElement(
+                    "div"
+                );
+
+            moveButtons.className =
+                "move-buttons";
+
+
+            const left =
+                document.createElement(
+                    "button"
+                );
+
+            left.textContent =
+                "←";
+
+
+            left.addEventListener(
+                "click",
+                () => {
+
+                    if (index > 0) {
+
+                        [
+                            selectedImages[index - 1],
+                            selectedImages[index]
+                        ] = [
+                            selectedImages[index],
+                            selectedImages[index - 1]
+                        ];
+
+                        renderImages();
+
+                    }
+
+                }
+            );
+
+
+            const right =
+                document.createElement(
+                    "button"
+                );
+
+            right.textContent =
+                "→";
+
+
+            right.addEventListener(
+                "click",
+                () => {
+
+                    if (
+                        index <
+                        selectedImages.length - 1
+                    ) {
+
+                        [
+                            selectedImages[index],
+                            selectedImages[index + 1]
+                        ] = [
+                            selectedImages[index + 1],
+                            selectedImages[index]
+                        ];
+
+                        renderImages();
+
+                    }
+
+                }
+            );
+
+
+            moveButtons.appendChild(left);
+            moveButtons.appendChild(right);
+
+
+            item.appendChild(img);
+            item.appendChild(number);
+            item.appendChild(remove);
+            item.appendChild(moveButtons);
+
+
+            imageList.appendChild(item);
+
+        }
+    );
+
+
+    imageCount.textContent =
+        selectedImages.length +
+        (
+            selectedImages.length === 1
+                ? " image"
+                : " images"
+        );
+
+
+    selectedSection.style.display =
+        selectedImages.length
+            ? "block"
+            : "none";
+
+}
+
+
+
+imageInput.addEventListener(
+    "change",
+    () => {
+
+        hideError();
+
+
+        const files =
+            Array.from(
+                imageInput.files
+            );
+
+
+        if (!files.length) {
+            return;
+        }
+
+
+        const invalid =
+            files.find(
+                file =>
+                    !file.type.startsWith(
+                        "image/"
+                    )
+            );
+
+
+        if (invalid) {
+
+            showError(
+                "Please select only image files."
+            );
+
+            return;
+
+        }
+
+
+        selectedImages =
+            files.slice(
+                0,
+                20
+            );
+
+
+        renderImages();
+
+    }
+);
+
+
+
+generateButton.addEventListener(
+    "click",
+    async () => {
+
+        if (
+            selectedImages.length === 0
+        ) {
+            return;
+        }
+
+
+        generateButton.disabled =
+            true;
+
+        generateButton.textContent =
+            "Creating PDF...";
+
+
+        try {
+
+            const pdf =
+                new jsPDF({
+                    orientation: "portrait",
+                    unit: "mm",
+                    format: "a4"
+                });
+
+
+            for (
+                let i = 0;
+                i < selectedImages.length;
+                i++
+            ) {
+
+                const file =
+                    selectedImages[i];
+
+
+                const dataUrl =
+                    await readFile(
+                        file
+                    );
+
+
+                const dimensions =
+                    await getImageDimensions(
+                        dataUrl
+                    );
+
+
+                if (i > 0) {
+
+                    pdf.addPage();
+
+                }
+
+
+                const pageWidth =
+                    210;
+
+                const pageHeight =
+                    297;
+
+
+                const margin =
+                    10;
+
+
+                const maxWidth =
+                    pageWidth -
+                    margin * 2;
+
+
+                const maxHeight =
+                    pageHeight -
+                    margin * 2;
+
+
+                const ratio =
+                    Math.min(
+                        maxWidth /
+                            dimensions.width,
+
+                        maxHeight /
+                            dimensions.height
+                    );
+
+
+                const width =
+                    dimensions.width *
+                    ratio;
+
+
+                const height =
+                    dimensions.height *
+                    ratio;
+
+
+                const x =
+                    (
+                        pageWidth -
+                        width
+                    ) / 2;
+
+
+                const y =
+                    (
+                        pageHeight -
+                        height
+                    ) / 2;
+
+
+                let format =
+                    "JPEG";
+
+
+                if (
+                    file.type ===
+                    "image/png"
+                ) {
+
+                    format = "PNG";
+
+                }
+
+
+                pdf.addImage(
+                    dataUrl,
+                    format,
+                    x,
+                    y,
+                    width,
+                    height
+                );
+
+            }
+
+
+            const blob =
+                pdf.output(
+                    "blob"
+                );
+
+
+            if (pdfUrl) {
+
+                URL.revokeObjectURL(
+                    pdfUrl
+                );
+
+            }
+
+
+            pdfUrl =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            downloadButton.href =
+                pdfUrl;
+
+
+            result.style.display =
+                "block";
+
+
+            generateButton.textContent =
+                "Create PDF";
+
+            generateButton.disabled =
+                false;
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            showError(
+                "Could not create the PDF. Please try again."
+            );
+
+
+            generateButton.disabled =
+                false;
+
+            generateButton.textContent =
+                "Create PDF";
+
+        }
+
+    }
+);
+
+
+
+function readFile(file) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                () =>
+                    resolve(
+                        reader.result
+                    );
+
+
+            reader.onerror =
+                reject;
+
+
+            reader.readAsDataURL(
+                file
+            );
+
+        }
+    );
+
+}
+
+
+
+function getImageDimensions(
+    dataUrl
+) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            const image =
+                new Image();
+
+
+            image.onload =
+                () => {
+
+                    resolve({
+                        width:
+                            image.naturalWidth,
+
+                        height:
+                            image.naturalHeight
+                    });
+
+                };
+
+
+            image.onerror =
+                reject;
+
+
+            image.src =
+                dataUrl;
+
+        }
+    );
+
+}
+
+
+
+resetButton.addEventListener(
+    "click",
+    () => {
+
+        selectedImages = [];
+
+        imageInput.value = "";
+
+        imageList.innerHTML = "";
+
+        selectedSection.style.display =
+            "none";
+
+        result.style.display =
+            "none";
+
+        hideError();
+
+
+        if (pdfUrl) {
+
+            URL.revokeObjectURL(
+                pdfUrl
+            );
+
+            pdfUrl = null;
+
+        }
+
+    }
+);
+
+</script>
+
+<script src="../js/app.js"></script>
+</body>
+
+</html>
