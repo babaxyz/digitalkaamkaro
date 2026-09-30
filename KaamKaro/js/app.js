@@ -5,7 +5,6 @@ const toolIcons = {
     "pdf-to-image.html": "📑",
     "qr-generator.html": "🔳",
     "percentage.html": "🧮",
-    "image-to-text.html": "📷"
 };
 
 const toolFile =
