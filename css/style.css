@@ -936,3 +936,13 @@ footer > p {
 
     color: var(--primary);
 }
+/* Remove unwanted dashed lines from upload area */
+.upload-area::before,
+.upload-area::after,
+.upload-box::before,
+.upload-box::after,
+.drop-zone::before,
+.drop-zone::after {
+    display: none !important;
+    content: none !important;
+}
